@@ -80,7 +80,7 @@ export default function ProductChainSection() {
       </div>
       <div className="flex justify-end">
         <Link
-          href="/viewData/stocks"
+          href="/viewdata/productchain"
           className="rounded-lg bg-slate-950 px-3 py-2 text-white transition-all hover:text-white hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
         >
           Manage Production

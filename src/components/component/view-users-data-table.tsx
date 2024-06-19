@@ -1,16 +1,14 @@
 import { Button } from "../ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 
-export default function ViewDataTable() {
+export default function ViewUsersDataTable() {
   return (
     <div className="border shadow-sm rounded-lg">
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Stock</TableHead>
-            <TableHead>Quantity</TableHead>
-            <TableHead>Price</TableHead>
-            <TableHead>Total Value</TableHead>
+            <TableHead>Username</TableHead>
+            <TableHead>Role</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -18,8 +16,6 @@ export default function ViewDataTable() {
           <TableRow>
             <TableCell className="font-medium">Apple Inc.</TableCell>
             <TableCell>100</TableCell>
-            <TableCell>$120.00</TableCell>
-            <TableCell>$12,000.00</TableCell>
             <TableCell className="text-right">
               <Button variant="outline" size="sm" className="mr-2">
                 Edit
