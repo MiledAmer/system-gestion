@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model config_variables {
+  variable_name  String @id @db.VarChar
+  variable_value Float? @db.Real
+}
+
+model historique {
+  id          Float       @id
+  nom         String      @db.VarChar(50)
+  action      String      @db.VarChar(50)
+  date        DateTime    @db.Date
+  utilisateur utilisateur @relation(fields: [nom], references: [nom], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model matierepremiere {
+  numeroarticle String        @id @db.VarChar(50)
+  designation   String?       @default("Designation_de_matiere") @db.VarChar(30)
+  type          measurement?  @default(piece)
+  quantite      Float
+  prixunitaire  Float
+  date          DateTime      @default(dbgenerated("CURRENT_DATE")) @db.Date
+  utilisation   utilisation[]
+}
+
+model product {
+  numeroproduit String        @id @db.VarChar(50)
+  production    production[]
+  utilisation   utilisation[]
+}
+
+model production {
+  numeroof      String       @id @db.VarChar(50)
+  numeroproduit String       @db.VarChar(50)
+  quantity      Float
+  date          DateTime     @db.Date
+  etat          productstate
+  product       product      @relation(fields: [numeroproduit], references: [numeroproduit], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model utilisateur {
+  nom        String       @id @db.VarChar(100)
+  password   String       @db.VarChar(128)
+  role       userrole
+  historique historique[]
+}
+
+model utilisation {
+  numeroproduit   String          @db.VarChar(50)
+  numeroarticle   String          @db.VarChar(50)
+  quantite        Float
+  matierepremiere matierepremiere @relation(fields: [numeroarticle], references: [numeroarticle], onDelete: NoAction, onUpdate: NoAction)
+  product         product         @relation(fields: [numeroproduit], references: [numeroproduit], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([numeroproduit, numeroarticle])
+}
+
+enum measurement {
+  piece
+  metre
+}
+
+enum productstate {
+  a_produire    @map("a produire")
+  en_production @map("en production")
+  produit_fini  @map("produit fini")
+}
+
+enum userrole {
+  production
+  inventaire
+  admin
+}
