@@ -1,7 +1,12 @@
 import Link from "next/link";
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { PauseIcon, UserCheckIcon, UserXIcon, UsersIcon } from "../icons/dashboard-icons";
+import {
+  PauseIcon,
+  UserCheckIcon,
+  UserXIcon,
+  UsersIcon,
+} from "../icons/dashboard-icons";
 import { Button } from "../ui/button";
 
 export default function UsersSection() {
@@ -72,7 +77,12 @@ export default function UsersSection() {
         </Card>
       </div>
       <div className="flex justify-end">
-        <Button size="sm">Manage Users</Button>
+        <Link
+          href="/viewData/stocks"
+          className="rounded-lg bg-slate-950 px-3 py-2 text-white transition-all hover:text-white hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+        >
+          Manage Users
+        </Link>
       </div>
     </section>
   );
