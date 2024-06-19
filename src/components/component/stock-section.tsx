@@ -56,7 +56,7 @@ export default function StockSection() {
             </Card>
           </div>
           <div className="flex justify-end">
-            <Button size="sm">Manage Stock</Button>
+            <Link href='/viewData/stocks' className="rounded-lg bg-gray-100 px-3 py-2 text-gray-900 transition-all hover:text-gray-900 dark:bg-white dark:text-black dark:hover:bg-gray-200">Manage Stock</Link>
           </div>
         </section>
   )
