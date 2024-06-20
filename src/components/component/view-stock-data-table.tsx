@@ -1,7 +1,17 @@
+import { db } from "@/server/db";
 import { Button } from "../ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
 
-export default function ViewStockDataTable() {
+export default async function ViewStockDataTable() {
+  const data = await db.matierepremiere.findMany();
+
   return (
     <div className="border shadow-sm rounded-lg">
       <Table>
@@ -17,14 +27,16 @@ export default function ViewStockDataTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow>
-            <TableCell className="font-medium">Apple Inc.</TableCell>
-            <TableCell>100</TableCell>
-            <TableCell>$120.00</TableCell>
-            <TableCell>$12,000.00</TableCell>
-            <TableCell>100</TableCell>
-            <TableCell>$120.00</TableCell>
-            <TableCell className="text-right">
+          
+          {data && data.map((row) => (
+            <TableRow key={row.numeroarticle}>
+              <TableCell className="font-medium">{row.numeroarticle}</TableCell>
+              <TableCell>{row.designation}</TableCell>
+              <TableCell>{row.type}</TableCell>
+              <TableCell>{row.quantite}</TableCell>
+              <TableCell>{row.prixunitaire}</TableCell>
+              <TableCell>{row.date.toISOString().split('T')[0]}</TableCell>
+              <TableCell className="text-right">
               <Button variant="outline" size="sm" className="mr-2">
                 Edit
               </Button>
@@ -32,49 +44,8 @@ export default function ViewStockDataTable() {
                 Delete
               </Button>
             </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell className="font-medium">Microsoft Corp.</TableCell>
-            <TableCell>50</TableCell>
-            <TableCell>$250.00</TableCell>
-            <TableCell>$12,500.00</TableCell>
-            <TableCell className="text-right">
-              <Button variant="outline" size="sm" className="mr-2">
-                Edit
-              </Button>
-              <Button variant="outline" size="sm" className="text-red-500">
-                Delete
-              </Button>
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell className="font-medium">Amazon.com, Inc.</TableCell>
-            <TableCell>75</TableCell>
-            <TableCell>$3,000.00</TableCell>
-            <TableCell>$225,000.00</TableCell>
-            <TableCell className="text-right">
-              <Button variant="outline" size="sm" className="mr-2">
-                Edit
-              </Button>
-              <Button variant="outline" size="sm" className="text-red-500">
-                Delete
-              </Button>
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell className="font-medium">Tesla, Inc.</TableCell>
-            <TableCell>25</TableCell>
-            <TableCell>$800.00</TableCell>
-            <TableCell>$20,000.00</TableCell>
-            <TableCell className="text-right">
-              <Button variant="outline" size="sm" className="mr-2">
-                Edit
-              </Button>
-              <Button variant="outline" size="sm" className="text-red-500">
-                Delete
-              </Button>
-            </TableCell>
-          </TableRow>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </div>
