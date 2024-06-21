@@ -1,5 +1,3 @@
-import { db } from "@/server/db";
-import { Button } from "../ui/button";
 import {
   Table,
   TableBody,
@@ -8,10 +6,11 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
+import { deleteArticle } from "@/actions/actions";
+import { matierepremiere } from "@prisma/client";
+import TableButtons from "./table-button";
 
-export default async function ViewStockDataTable() {
-  const data = await db.matierepremiere.findMany();
-
+export default async function ViewStockDataTable({ data }: {data: matierepremiere[]}) {
   return (
     <div className="border shadow-sm rounded-lg">
       <Table>
@@ -27,25 +26,24 @@ export default async function ViewStockDataTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          
-          {data && data.map((row) => (
-            <TableRow key={row.numeroarticle}>
-              <TableCell className="font-medium">{row.numeroarticle}</TableCell>
-              <TableCell>{row.designation}</TableCell>
-              <TableCell>{row.type}</TableCell>
-              <TableCell>{row.quantite}</TableCell>
-              <TableCell>{row.prixunitaire}</TableCell>
-              <TableCell>{row.date.toISOString().split('T')[0]}</TableCell>
-              <TableCell className="text-right">
-              <Button variant="outline" size="sm" className="mr-2">
-                Edit
-              </Button>
-              <Button variant="outline" size="sm" className="text-red-500">
-                Delete
-              </Button>
-            </TableCell>
-            </TableRow>
-          ))}
+          {data &&
+            data.map((row: matierepremiere) => (
+              <TableRow key={row.numeroarticle}>
+                <TableCell className="font-medium">
+                  {row.numeroarticle}
+                </TableCell>
+                <TableCell>{row.designation}</TableCell>
+                <TableCell>{row.type}</TableCell>
+                <TableCell>{row.quantite}</TableCell>
+                <TableCell>{row.prixunitaire}</TableCell>
+                <TableCell>{row.date.toISOString().split("T")[0]}</TableCell>
+                <TableCell className="text-right">
+                  <form>
+                    <TableButtons row={row}/>
+                  </form>
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </div>
