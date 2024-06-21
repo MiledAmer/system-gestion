@@ -16,14 +16,19 @@ export async function createArticle(formData: FormData) {
   };
 
  const article = await db.matierepremiere.create({data: rawFormData})
- revalidatePath('/viewdata/stocks')
+ if (article){
+  revalidatePath('/viewdata/stocks')
+ }else{
+  console.log("ma 5edmetch")
+ }
+ 
 }
 
 
-export async function deleteArticle(data: matierepremiere) {
+export async function deleteArticle(row: matierepremiere, formData:FormData) {
   const deletedArticle = await db.matierepremiere.delete({
     where: {
-      numeroarticle: data.numeroarticle,
+      numeroarticle: row.numeroarticle,
     },
   })
   console.log(deletedArticle)

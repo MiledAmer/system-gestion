@@ -6,11 +6,16 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import { deleteArticle } from "@/actions/actions";
 import { matierepremiere } from "@prisma/client";
 import TableButtons from "./table-button";
+import { Button } from "../ui/button";
+import { deleteArticle } from "@/actions/actions";
 
-export default async function ViewStockDataTable({ data }: {data: matierepremiere[]}) {
+export default async function ViewStockDataTable({
+  data,
+}: {
+  data: matierepremiere[];
+}) {
   return (
     <div className="border shadow-sm rounded-lg">
       <Table>
@@ -38,9 +43,7 @@ export default async function ViewStockDataTable({ data }: {data: matierepremier
                 <TableCell>{row.prixunitaire}</TableCell>
                 <TableCell>{row.date.toISOString().split("T")[0]}</TableCell>
                 <TableCell className="text-right">
-                  <form>
-                    <TableButtons row={row}/>
-                  </form>
+                  <TableButtons row={row} />
                 </TableCell>
               </TableRow>
             ))}
