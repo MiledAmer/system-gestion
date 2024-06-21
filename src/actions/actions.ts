@@ -24,6 +24,22 @@ export async function createArticle(formData: FormData) {
  
 }
 
+export async function updateArticle(row: matierepremiere, formData: FormData) {
+  const updatedArticle = await db.matierepremiere.update({
+    where: {
+      numeroarticle: row.numeroarticle,
+    },
+    data: {
+      designation: formData.get("description") as string,
+      type: formData.get("type") as measurement,
+      quantite: parseFloat(formData.get("quantity") as string),
+      prixunitaire: parseFloat(formData.get("unit-price") as string),
+      date: new Date(),
+    },
+  })
+  console.log(updatedArticle)
+  revalidatePath('/viewdata/stocks')
+}
 
 export async function deleteArticle(row: matierepremiere, formData:FormData) {
   const deletedArticle = await db.matierepremiere.delete({

@@ -10,6 +10,7 @@ import { matierepremiere } from "@prisma/client";
 import TableButtons from "./table-button";
 import { Button } from "../ui/button";
 import { deleteArticle } from "@/actions/actions";
+import { UpdateArticleForm } from "./update-article-form";
 
 export default async function ViewStockDataTable({
   data,
@@ -42,8 +43,9 @@ export default async function ViewStockDataTable({
                 <TableCell>{row.quantite}</TableCell>
                 <TableCell>{row.prixunitaire}</TableCell>
                 <TableCell>{row.date.toISOString().split("T")[0]}</TableCell>
-                <TableCell className="text-right">
+                <TableCell className="text-right flex flex-row-reverse">
                   <TableButtons row={row} />
+                  <UpdateArticleForm row={row} />
                 </TableCell>
               </TableRow>
             ))}
