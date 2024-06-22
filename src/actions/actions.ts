@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from "@/server/db";
-import { matierepremiere, measurement } from "@prisma/client";
+import { matierepremiere, measurement, production } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
 interface Article {
@@ -65,7 +65,6 @@ export async function deleteArticle(row: matierepremiere, formData:FormData) {
 }
 
 export async function createProduct(articles:Article[] ,productNumber: string) {
-  const data = db.matierepremiere.findMany()
   const rawFormData = {
     numeroproduit: productNumber as string,
     
@@ -84,6 +83,23 @@ export async function createProduct(articles:Article[] ,productNumber: string) {
   })
   if (product){
     revalidatePath('/viewdata/productchain')
+   }else{
+    console.log("ma 5edmetch")
+   }
+}
+
+// create the of
+export async function createOf(formData: FormData) {
+  const rawFormData: production = {
+    numeroof: formData.get("of-number") as string,
+    numeroproduit: formData.get("product-number") as string,
+    quantity: parseFloat(formData.get("quantity") as string),
+    etat: "a_produire", // default
+    date: new Date(),
+  };
+  const of = await db.production.create({data: rawFormData})
+  if (of){
+    revalidatePath('/viewdata/viewdata/productchain')
    }else{
     console.log("ma 5edmetch")
    }
