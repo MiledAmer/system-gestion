@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from "@/server/db";
-import { matierepremiere, measurement, production } from "@prisma/client";
+import { matierepremiere, measurement, production, utilisation } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
 interface Article {
@@ -88,15 +88,68 @@ export async function createProduct(articles:Article[] ,productNumber: string) {
    }
 }
 
+//product exists
+export async function productExists(productNumber: string) {
+  const product = await db.product.findUnique({
+    where: {
+      numeroproduit: productNumber,
+    },
+  });
+  return product !== null;
+}
+
+//product details
+export async function getProductDetails(productNumber: string){
+  const productDetails = await db.utilisation.findMany({
+    where: {
+      numeroproduit: productNumber,
+    },
+  });
+  return productDetails;
+}
+
+//articles exists
+export async function articlesExists(articles: utilisation[]) {
+  let exists = true;
+  articles.forEach(async (article) => {
+    if (!(await articleExists(article.numeroarticle))) {
+      exists = false;
+    }
+  });
+  return exists;
+}
+
+
+
+
 // create the of
 export async function createOf(formData: FormData) {
+  // check if product exists
+  const productNumber = formData.get("productNumber") as string;
+  console.log("product number: ",productNumber)
+  if (!(await productExists(productNumber))) {
+    console.log("Product does not exist");
+    return;
+  }
+
+  // get product details
+  const productDetails = await getProductDetails(productNumber);
+
+  // check if all articles exist
+  if(!await articlesExists(productDetails)){
+    console.log("Articles does not exist");
+    return;
+  }
+  
+  // create the of
   const rawFormData: production = {
-    numeroof: formData.get("of-number") as string,
-    numeroproduit: formData.get("product-number") as string,
+    numeroof: formData.get("ofNumber") as string,
+    numeroproduit: productNumber,
     quantity: parseFloat(formData.get("quantity") as string),
     etat: "a_produire", // default
     date: new Date(),
   };
+
   const of = await db.production.create({data: rawFormData})
   if (of){
     revalidatePath('/viewdata/viewdata/productchain')

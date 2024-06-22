@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { createOf } from "@/actions/actions";
 
 export function AddOfForm() {
   return (
@@ -24,20 +25,20 @@ export function AddOfForm() {
             Enter the details of the article you want to add.
           </DialogDescription>
         </DialogHeader>
-        <form className="space-y-4">
+        <form className="space-y-4" action={createOf}>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="ofNumber">OF Number</Label>
-              <Input id="ofNumber" required />
+              <Input id="ofNumber" name="ofNumber" required />
             </div>
             <div className="space-y-2">
               <Label htmlFor="productNumber">Product Number</Label>
-              <Input id="productNumber" required />
+              <Input id="productNumber" name="productNumber" required />
             </div>
           </div>
           <div className="space-y-2">
             <Label htmlFor="quantity">Quantity</Label>
-            <Input id="quantity" type="number" min={1} required />
+            <Input id="quantity" name="quantity" type="number" min={1} required />
           </div>
           <DialogFooter>
             <Button type="submit">Add OF</Button>
