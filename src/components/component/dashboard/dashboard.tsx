@@ -1,7 +1,7 @@
 import AppBar from "./dashboard-app-bar"
-import StockSection from "./stock-section"
-import ProductChainSection from "./product-chain-section"
-import UsersSection from "./users-section"
+import StockSection from "./sections/stock-section"
+import ProductChainSection from "./sections/product-chain-section"
+import UsersSection from "./sections/users-section"
 
 export function Dashboard() {
   return (

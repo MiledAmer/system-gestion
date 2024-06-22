@@ -1,13 +1,13 @@
 import Link from "next/link";
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../../../ui/card";
 import {
   CircleCheckIcon,
   ClockIcon,
   ShoppingCartIcon,
   TruckIcon,
-} from "../icons/dashboard-icons";
-import { Button } from "../ui/button";
+} from "../../../icons/dashboard-icons";
+import { Button } from "../../../ui/button";
 
 export default function ProductChainSection() {
   return (

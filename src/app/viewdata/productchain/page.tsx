@@ -1,4 +1,4 @@
-import { ProductChainPage } from '@/components/component/product-chain-page'
+import { ProductChainPage } from '@/components/component/pages/product-chain-page'
 import React from 'react'
 
 export default function Page() {

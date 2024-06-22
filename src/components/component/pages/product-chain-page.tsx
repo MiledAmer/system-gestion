@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
-import ViewProductChainDataTable from "./view-product-chain-data-table";
-import { AddOfForm } from "./add-of-form";
-import { AddProductForm } from "./add-product-form";
+import ViewProductChainDataTable from "../tables/view-product-chain-data-table";
+import { AddOfForm } from "../forms/add-of-form";
+import { AddProductForm } from "../forms/add-product-form";
 
 export function ProductChainPage() {
   return (

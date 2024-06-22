@@ -1,5 +1,5 @@
 import { db } from "@/server/db";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import {
   Table,
   TableBody,
@@ -7,7 +7,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../ui/table";
+} from "../../ui/table";
 
 export default async function ViewUsersDataTable() {
   const data = await db.utilisateur.findMany();

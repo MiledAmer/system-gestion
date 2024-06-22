@@ -5,12 +5,12 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../ui/table";
+} from "../../ui/table";
 import { matierepremiere } from "@prisma/client";
 import TableButtons from "./table-button";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { deleteArticle } from "@/actions/actions";
-import { UpdateArticleForm } from "./update-article-form";
+import { UpdateArticleForm } from "../forms/update-article-form";
 
 export default async function ViewStockDataTable({
   data,

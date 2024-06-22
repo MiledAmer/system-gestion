@@ -1,4 +1,4 @@
-import { UsersPage } from '@/components/component/users-page'
+import { UsersPage } from '@/components/component/pages/users-page'
 import React from 'react'
 
 export default function page() {

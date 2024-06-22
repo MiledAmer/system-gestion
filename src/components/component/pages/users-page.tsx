@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import ViewUsersDataTable from "./view-users-data-table";
+import ViewUsersDataTable from "../tables/view-users-data-table";
 
 export function UsersPage() {
   return (

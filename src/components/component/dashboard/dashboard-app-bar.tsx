@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { BellIcon, Package2Icon } from "../icons/dashboard-icons";
-import { Button } from "../ui/button";
+import { BellIcon, Package2Icon } from "../../icons/dashboard-icons";
+import { Button } from "../../ui/button";
 
 export default function AppBar() {
   return (

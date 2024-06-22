@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
-import ViewStockDataTable from "./view-stock-data-table";
-import { AddArticleForm } from "./add-article-form";
+import ViewStockDataTable from "../tables/view-stock-data-table";
+import { AddArticleForm } from "../forms/add-article-form";
 import { db } from "@/server/db";
 
 export async function StockPage() {

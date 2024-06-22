@@ -1,12 +1,19 @@
 import Link from "next/link";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { GaugeIcon, PackageIcon, PackageXIcon } from "../icons/dashboard-icons";
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "../../../ui/card";
+import {
+  PauseIcon,
+  UserCheckIcon,
+  UserXIcon,
+  UsersIcon,
+} from "../../../icons/dashboard-icons";
+import { Button } from "../../../ui/button";
 
-export default function StockSection() {
+export default function UsersSection() {
   return (
     <section className="bg-white rounded-lg shadow-md p-6 space-y-4 dark:bg-gray-950">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold">Stock Management</h2>
+        <h2 className="text-lg font-bold">User Management</h2>
         <Link
           href="#"
           className="text-gray-900 hover:text-primary-600 dark:text-gray-50"
@@ -18,10 +25,8 @@ export default function StockSection() {
       <div className="grid grid-cols-2 gap-4">
         <Card>
           <CardHeader className="flex items-center justify-between">
-            <CardTitle className="text-sm font-medium">
-              Total Products
-            </CardTitle>
-            <PackageIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+            <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+            <UsersIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">1,234</div>
@@ -32,8 +37,8 @@ export default function StockSection() {
         </Card>
         <Card>
           <CardHeader className="flex items-center justify-between">
-            <CardTitle className="text-sm font-medium">In Stock</CardTitle>
-            <GaugeIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+            <CardTitle className="text-sm font-medium">Active Users</CardTitle>
+            <UserCheckIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">987</div>
@@ -44,8 +49,10 @@ export default function StockSection() {
         </Card>
         <Card>
           <CardHeader className="flex items-center justify-between">
-            <CardTitle className="text-sm font-medium">Out of Stock</CardTitle>
-            <PackageXIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+            <CardTitle className="text-sm font-medium">
+              Inactive Users
+            </CardTitle>
+            <UserXIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">247</div>
@@ -56,8 +63,10 @@ export default function StockSection() {
         </Card>
         <Card>
           <CardHeader className="flex items-center justify-between">
-            <CardTitle className="text-sm font-medium">Reorder Level</CardTitle>
-            <GaugeIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+            <CardTitle className="text-sm font-medium">
+              Suspended Users
+            </CardTitle>
+            <PauseIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">100</div>
@@ -69,10 +78,10 @@ export default function StockSection() {
       </div>
       <div className="flex justify-end">
         <Link
-          href="/viewdata/stocks"
+          href="/viewdata/users"
           className="rounded-lg bg-slate-950 px-3 py-2 text-white transition-all hover:text-white hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
         >
-          Manage Stock
+          Manage Users
         </Link>
       </div>
     </section>

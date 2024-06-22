@@ -1,9 +1,9 @@
 import Link from 'next/link'
 import React from 'react'
-import { Package2Icon, SearchIcon } from '../icons/stock-icons'
-import { Input } from '../ui/input'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu'
-import { Button } from '../ui/button'
+import { Package2Icon, SearchIcon } from '../../icons/stock-icons'
+import { Input } from '../../ui/input'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../../ui/dropdown-menu'
+import { Button } from '../../ui/button'
 
 export default function ViewDataAppBar() {
   return (

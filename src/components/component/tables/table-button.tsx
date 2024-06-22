@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { deleteArticle } from "@/actions/actions";
 import { matierepremiere } from "@prisma/client";
 

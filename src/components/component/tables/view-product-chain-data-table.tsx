@@ -1,6 +1,6 @@
 import { db } from "@/server/db";
-import { Button } from "../ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
+import { Button } from "../../ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../ui/table";
 
 
 export default async function ViewProductChainDataTable() {
