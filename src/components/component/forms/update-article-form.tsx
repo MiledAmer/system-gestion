@@ -19,7 +19,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { updateArticle } from "@/actions/actions";
-import { matierepremiere } from "@prisma/client";
+import { matierepremiere, measurement } from "@prisma/client";
 
 export function UpdateArticleForm({ row }: { row: matierepremiere }) {
   const updateRow = updateArticle.bind(null, row);
@@ -48,13 +48,14 @@ export function UpdateArticleForm({ row }: { row: matierepremiere }) {
               name="description"
               placeholder="Enter a description"
               className="col-span-3"
+              defaultValue={row.designation? row.designation : ""}
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="type" className="text-right">
               Type
             </Label>
-            <Select name="type">
+            <Select name="type" defaultValue={row.type as measurement} required>
               <SelectTrigger>
                 <SelectValue placeholder="Select type" />
               </SelectTrigger>
@@ -75,6 +76,8 @@ export function UpdateArticleForm({ row }: { row: matierepremiere }) {
               type="number"
               placeholder="1"
               className="col-span-3"
+              required
+              defaultValue={row.quantite? row.quantite : 0}
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
@@ -87,6 +90,8 @@ export function UpdateArticleForm({ row }: { row: matierepremiere }) {
               type="number"
               placeholder="9.99"
               className="col-span-3"
+              defaultValue={row.prixunitaire? row.prixunitaire : 0}
+              required
             />
           </div>
           <DialogFooter>

@@ -13,7 +13,7 @@ export default function ViewDataAppBar() {
             <span className="sr-only">Home</span>
           </Link>
           <div className="flex-1">
-            <h1 className="text-lg font-semibold md:text-2xl">Stock Dashboard</h1>
+            <h1 className="text-lg font-semibold md:text-2xl"></h1>
           </div>
           <div className="flex items-center gap-4">
             <form className="flex-1 relative">

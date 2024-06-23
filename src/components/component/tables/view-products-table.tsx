@@ -10,6 +10,7 @@ import {
 } from "../../ui/table";
 import { deleteProduct } from "@/actions/actions";
 import DeleteButtons from "./delete-button";
+import Link from "next/link";
 
 export default async function ViewProductsTable() {
   const data = await db.product.findMany();
@@ -27,10 +28,7 @@ export default async function ViewProductsTable() {
             data.map((row) => (
               <TableRow key={row.numeroproduit}>
                 <TableCell>{row.numeroproduit}</TableCell>
-                <TableCell
-                  className="text-right flex flex-row-reverse"
-                >
-                  
+                <TableCell className="text-right flex flex-row-reverse">
                   <form
                     action={async () => {
                       "use server";
@@ -42,6 +40,11 @@ export default async function ViewProductsTable() {
                   <Button variant="outline" size="sm" className="mr-2">
                     Edit
                   </Button>
+                  <Link href={`/viewdata/products/${row.numeroproduit}`} className="mr-2">
+                    <Button variant="outline" size="sm">
+                      details
+                    </Button>
+                  </Link>
                 </TableCell>
               </TableRow>
             ))}

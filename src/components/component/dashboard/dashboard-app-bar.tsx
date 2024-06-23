@@ -12,7 +12,7 @@ export default function AppBar() {
           prefetch={false}
         >
           <Package2Icon className="w-6 h-6" />
-          Acme Dashboard
+          EMK Dashboard
         </Link>
         <nav className="hidden md:flex items-center gap-4 text-sm">
           <Link href="#" className="hover:text-gray-300" prefetch={false}>

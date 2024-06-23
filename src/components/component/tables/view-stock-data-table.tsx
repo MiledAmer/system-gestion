@@ -10,6 +10,8 @@ import { matierepremiere } from "@prisma/client";
 import { deleteArticle } from "@/actions/actions";
 import { UpdateArticleForm } from "../forms/update-article-form";
 import DeleteButtons from "./delete-button";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default async function ViewStockDataTable({
   data,
@@ -53,6 +55,11 @@ export default async function ViewStockDataTable({
                     <DeleteButtons />
                   </form>
                   <UpdateArticleForm row={row} />
+                  <Link href={`/viewdata/stocks/${row.numeroarticle}`} className="mr-2">
+                    <Button variant="outline" size="sm">
+                      details
+                    </Button>
+                  </Link>
                 </TableCell>
               </TableRow>
             ))}

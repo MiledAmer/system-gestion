@@ -86,6 +86,7 @@ export function AddProductForm() {
               name="productNumber"
               value={productNumber}
               onChange={(e) => setProductNumber(e.target.value)}
+              required
             />
           </div>
           <div className="grid gap-4">
@@ -113,6 +114,7 @@ export function AddProductForm() {
                         onChange={(e) =>
                           updateArticle(index, "name", e.target.value)
                         }
+                        required
                       />
                     </TableCell>
                     <TableCell>
@@ -127,6 +129,7 @@ export function AddProductForm() {
                             parseFloat(e.target.value)
                           )
                         }
+                        required
                       />
                     </TableCell>
                     <TableCell>
