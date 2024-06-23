@@ -45,6 +45,7 @@ export function AddArticleForm() {
               name="article-number"
               placeholder="123456"
               className="col-span-3"
+              required
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
@@ -62,14 +63,13 @@ export function AddArticleForm() {
             <Label htmlFor="type" className="text-right">
               Type
             </Label>
-            <Select name="type">
+            <Select name="type" defaultValue="piece" required>
               <SelectTrigger>
                 <SelectValue placeholder="Select type" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="piece">piece</SelectItem>
                 <SelectItem value="metre">metre</SelectItem>
-                {/* <SelectItem value="other">Other</SelectItem> */}
               </SelectContent>
             </Select>
           </div>
@@ -83,6 +83,7 @@ export function AddArticleForm() {
               type="number"
               placeholder="1"
               className="col-span-3"
+              required
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
@@ -95,6 +96,7 @@ export function AddArticleForm() {
               type="number"
               placeholder="9.99"
               className="col-span-3"
+              required
             />
           </div>
           <DialogFooter>
