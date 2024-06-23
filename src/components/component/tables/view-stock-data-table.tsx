@@ -7,10 +7,9 @@ import {
   TableRow,
 } from "../../ui/table";
 import { matierepremiere } from "@prisma/client";
-import TableButtons from "./table-button";
-import { Button } from "../../ui/button";
 import { deleteArticle } from "@/actions/actions";
 import { UpdateArticleForm } from "../forms/update-article-form";
+import DeleteButtons from "./delete-button";
 
 export default async function ViewStockDataTable({
   data,
@@ -44,7 +43,15 @@ export default async function ViewStockDataTable({
                 <TableCell>{row.prixunitaire}</TableCell>
                 <TableCell>{row.date.toISOString().split("T")[0]}</TableCell>
                 <TableCell className="text-right flex flex-row-reverse">
-                  <TableButtons row={row} />
+                  <form
+                    action={async (formData: FormData) => {
+                      "use server";
+                      const deleteArticleRow = deleteArticle.bind(null, row);
+                      await deleteArticleRow(formData);
+                    }}
+                  >
+                    <DeleteButtons />
+                  </form>
                   <UpdateArticleForm row={row} />
                 </TableCell>
               </TableRow>

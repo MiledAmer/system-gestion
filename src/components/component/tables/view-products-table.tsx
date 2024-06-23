@@ -1,0 +1,52 @@
+import { db } from "@/server/db";
+import { Button } from "../../ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../../ui/table";
+import { deleteProduct } from "@/actions/actions";
+import DeleteButtons from "./delete-button";
+
+export default async function ViewProductsTable() {
+  const data = await db.product.findMany();
+  return (
+    <div className="border shadow-sm rounded-lg">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Product number</TableHead>
+            <TableHead className="text-right">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {data &&
+            data.map((row) => (
+              <TableRow key={row.numeroproduit}>
+                <TableCell>{row.numeroproduit}</TableCell>
+                <TableCell
+                  className="text-right flex flex-row-reverse"
+                >
+                  
+                  <form
+                    action={async () => {
+                      "use server";
+                      await deleteProduct(row);
+                    }}
+                  >
+                    <DeleteButtons />
+                  </form>
+                  <Button variant="outline" size="sm" className="mr-2">
+                    Edit
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+        </TableBody>
+      </Table>
+    </div>
+  );
+}
