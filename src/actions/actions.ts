@@ -8,6 +8,7 @@ import {
   production,
   utilisation,
 } from "@prisma/client";
+import { Select } from "@radix-ui/react-select";
 import { revalidatePath } from "next/cache";
 
 interface Article {
@@ -95,6 +96,30 @@ export async function deleteArticle(row: matierepremiere, formData: FormData) {
     revalidatePath("/viewdata/stocks");
     console.log(deletedArticle);
   });
+}
+
+export async function articleUsage(articleNumber: string) {
+  const usage = await db.utilisation.findMany({
+    where: {
+      numeroarticle: articleNumber,
+    },
+  });
+  return usage;
+}
+
+//article in of
+//get all the of that use this article, the of don't have the article number but the product number
+export async function articleInOF(articleNumber: string) {
+  const result = await db.utilisation.findMany({
+    include: {
+      product: {include: {production: true}}
+    },
+    where : {
+      numeroarticle: articleNumber
+    }
+  }
+);
+  return result;
 }
 
 export async function createProduct(
@@ -195,7 +220,7 @@ export async function createOf(formData: FormData) {
     numeroproduit: productNumber,
     quantity: parseFloat(formData.get("quantity") as string),
     etat: "a_produire", // default
-    date: new Date(),
+    date: new Date(formData.get("Date") as string),
   };
 
   const of = await db.production.create({ data: rawFormData });

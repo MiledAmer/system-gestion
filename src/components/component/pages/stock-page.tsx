@@ -11,9 +11,6 @@ export async function StockPage() {
       <div className="flex items-center">
         <h2 className="font-semibold text-lg md:text-2xl">Stocks</h2>
         <AddArticleForm />
-        {/* <Button className="ml-auto" size="sm">
-          Add Stock
-        </Button> */}
       </div>
       <ViewStockDataTable data={data}/>
     </main>

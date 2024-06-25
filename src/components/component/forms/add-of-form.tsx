@@ -36,10 +36,19 @@ export function AddOfForm() {
               <Input id="productNumber" name="productNumber" required />
             </div>
           </div>
+
+          <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="quantity">Quantity</Label>
             <Input id="quantity" name="quantity" type="number" min={1} required />
           </div>
+            <div className="space-y-2">
+              <Label htmlFor="Date">Production date</Label>
+              <Input id="Date" type="Date" name="Date" required />
+            </div>
+          </div>
+          
+          
           <DialogFooter>
             <Button type="submit">Add OF</Button>
           </DialogFooter>
