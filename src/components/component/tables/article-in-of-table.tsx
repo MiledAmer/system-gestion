@@ -1,3 +1,4 @@
+import { db } from "@/server/db";
 import {
   Table,
   TableBody,
@@ -7,6 +8,7 @@ import {
   TableRow,
 } from "../../ui/table";
 import { articleInOF } from "@/actions/actions";
+import { useState } from "react";
 
 export default async function ArticleInOFTable({
   articleNumber,
@@ -14,6 +16,15 @@ export default async function ArticleInOFTable({
   articleNumber: string;
 }) {
   const data = await articleInOF(articleNumber);
+  const Quantity = await db.matierepremiere.findUnique({
+    select: {
+      quantite: true,
+    },
+    where: {
+      numeroarticle: articleNumber,
+    },
+  });
+  
   return (
     <div className="border shadow-sm rounded-lg">
       <Table>
@@ -25,22 +36,36 @@ export default async function ArticleInOFTable({
             <TableHead className="mx-auto">Date of manufacture</TableHead>
             <TableHead className="mx-auto">use</TableHead>
             <TableHead className="mx-auto">theoretical inventory</TableHead>
-            <TableHead className="mx-auto">real inventory</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data && data.map((row) =>(
-            row.product.utilisation.length > 0 && 
-              <TableRow key={row.numeroof}>
-                <TableCell className="font-medium mx-auto">{row.numeroof}</TableCell>
-                <TableCell className="mx-auto">{row.product.numeroproduit}</TableCell>
-                <TableCell className="mx-auto">{row.etat}</TableCell>
-                <TableCell className="mx-auto">{row.date.toISOString().split('T')[0]}</TableCell>
-                <TableCell className="mx-auto">{row.quantity*row.product.utilisation[0].quantite}</TableCell>
-                <TableCell className="mx-auto">{"test"}</TableCell>
-                <TableCell className="mx-auto">{"test"}</TableCell>
-              </TableRow>
-          ))}
+          {data &&
+            data.map(
+              (row) =>(
+                row.product.utilisation.length > 0 && (
+                  <TableRow key={row.numeroof}>
+                    <TableCell className="font-medium mx-auto">
+                      {row.numeroof}
+                    </TableCell>
+                    <TableCell className="mx-auto">
+                      {row.product.numeroproduit}
+                    </TableCell>
+                    <TableCell className="mx-auto">{row.etat}</TableCell>
+                    <TableCell className="mx-auto">
+                      {row.date.toISOString().split("T")[0]}
+                    </TableCell>
+                    <TableCell className="mx-auto">
+                      {row.quantity * row.product.utilisation[0].quantite}
+                    </TableCell>
+
+                    <TableCell className="mx-auto">
+                      {
+                        "test"
+                      }
+                    </TableCell>
+                  </TableRow>
+                ))
+            )}
         </TableBody>
       </Table>
     </div>
