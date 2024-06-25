@@ -15,6 +15,18 @@ interface Article {
   quantity: number;
 }
 
+export async function createArticles(Articles:matierepremiere[]){
+  try {
+    console.log("asba",Articles)
+    
+    const articles = await db.matierepremiere.createMany({data:Articles})
+    if(!articles) throw new Error("Error creating articles")
+    revalidatePath("/viewdata/stocks");
+  console.log("hey",articles)
+  } catch (error) {
+    console.log(error)
+  }
+}
 export async function createArticle(formData: FormData) {
   const rawFormData: matierepremiere = {
     numeroarticle: formData.get("article-number") as string,
@@ -205,3 +217,4 @@ export async function createOf(formData: FormData) {
     console.log("ma 5edmetch");
   }
 }
+
