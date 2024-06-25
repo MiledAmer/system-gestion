@@ -14,7 +14,6 @@ export default async function ArticleInOFTable({
   articleNumber: string;
 }) {
   const data = await articleInOF(articleNumber);
-  console.log(data);
   return (
     <div className="border shadow-sm rounded-lg">
       <Table>
@@ -30,26 +29,18 @@ export default async function ArticleInOFTable({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data &&
-            data.map((row) =>
-              row.product.production.map((production) => (
-                <TableRow key={production.numeroof}>
-                  <TableCell className="mx-auto">
-                    {production.numeroof}
-                  </TableCell>
-                  <TableCell className="mx-auto">
-                    {row.product.numeroproduit}
-                  </TableCell>
-                  <TableCell className="mx-auto">
-                    {production.etat}
-                  </TableCell>
-                  <TableCell className="mx-auto">{}</TableCell>
-                  <TableCell className="mx-auto">{row.quantite}</TableCell>
-                  <TableCell className="mx-auto">{}</TableCell>
-                  <TableCell className="mx-auto">{}</TableCell>
-                </TableRow>
-              ))
-            )}
+          {data && data.map((row) =>(
+            row.product.utilisation.length > 0 && 
+              <TableRow key={row.numeroof}>
+                <TableCell className="font-medium mx-auto">{row.numeroof}</TableCell>
+                <TableCell className="mx-auto">{row.product.numeroproduit}</TableCell>
+                <TableCell className="mx-auto">{row.etat}</TableCell>
+                <TableCell className="mx-auto">{row.date.toISOString().split('T')[0]}</TableCell>
+                <TableCell className="mx-auto">{row.quantity*row.product.utilisation[0].quantite}</TableCell>
+                <TableCell className="mx-auto">{"test"}</TableCell>
+                <TableCell className="mx-auto">{"test"}</TableCell>
+              </TableRow>
+          ))}
         </TableBody>
       </Table>
     </div>

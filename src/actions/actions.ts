@@ -110,12 +110,17 @@ export async function articleUsage(articleNumber: string) {
 //article in of
 //get all the of that use this article, the of don't have the article number but the product number
 export async function articleInOF(articleNumber: string) {
-  const result = await db.utilisation.findMany({
+  const result = await db.production.findMany({
     include: {
-      product: {include: {production: true}}
-    },
-    where : {
-      numeroarticle: articleNumber
+      product:{
+        include:{
+          utilisation:{
+            where:{
+              numeroarticle: articleNumber
+            }
+          }
+        }
+      }
     }
   }
 );
