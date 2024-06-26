@@ -1,6 +1,13 @@
+import { ProductDetailsPage } from "@/components/component/pages/product-details-page";
+type Props = {
+  params: {
+    productDetails: string;
+  };
+};
 
-export default function page() {
-  return (
-    <div>page</div>
-  )
-}
+const Page: React.FC<Props> = async ({ params }) => {
+  const { productDetails } = params;
+  return <ProductDetailsPage productNumber={productDetails} />;
+};
+
+export default Page;
