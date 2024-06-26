@@ -158,6 +158,12 @@ export async function articleInOF(articleNumber: string) {
   return result;
 }
 
+//get all the products
+export async function getProducts() {
+  const products = await db.product.findMany();
+  return products;
+}
+
 export async function createProduct(
   articles: Article[],
   productNumber: string

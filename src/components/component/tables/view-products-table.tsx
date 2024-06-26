@@ -1,4 +1,3 @@
-import { db } from "@/server/db";
 import { Button } from "../../ui/button";
 import {
   Table,
@@ -8,12 +7,12 @@ import {
   TableHeader,
   TableRow,
 } from "../../ui/table";
-import { deleteProduct } from "@/actions/actions";
+import { deleteProduct, getProducts } from "@/actions/actions";
 import DeleteButtons from "./delete-button";
 import Link from "next/link";
 
 export default async function ViewProductsTable() {
-  const data = await db.product.findMany();
+  const data = await getProducts();
   return (
     <div className="border shadow-sm rounded-lg">
       <Table>
