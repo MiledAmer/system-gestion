@@ -13,7 +13,6 @@ import Link from "next/link";
 
 export default async function ViewProductsTable() {
   const data = await getProducts();
-  console.log(data);
   return (
     <div className="border shadow-sm rounded-lg">
       <Table>

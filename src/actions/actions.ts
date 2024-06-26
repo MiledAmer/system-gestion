@@ -6,9 +6,9 @@ import {
   measurement,
   product,
   production,
+  productstate,
   utilisation,
 } from "@prisma/client";
-import { Select } from "@radix-ui/react-select";
 import { revalidatePath } from "next/cache";
 
 interface Article {
@@ -286,5 +286,22 @@ export async function createOf(formData: FormData) {
   } else {
     console.log("ma 5edmetch");
   }
+}
+
+//update of
+export async function updateOf(row: string, formdata: FormData) {
+  const updatedOf = await db.production.update({
+    where: {
+      numeroof: row,
+    },
+    data: {
+      numeroproduit: formdata.get("productNumber") as string,
+      quantity: parseFloat(formdata.get("quantity") as string),
+      etat: formdata.get("State") as productstate,
+      date: new Date(formdata.get("Date") as string),
+    },
+  });
+  console.log(updatedOf);
+  revalidatePath("/viewdata/viewdata/productchain");
 }
 

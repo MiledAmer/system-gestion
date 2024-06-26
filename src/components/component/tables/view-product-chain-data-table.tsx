@@ -1,6 +1,7 @@
 import { db } from "@/server/db";
 import { Button } from "../../ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../ui/table";
+import { UpdateOfForm } from "../forms/update-of-form";
 
 
 export default async function ViewProductChainDataTable() {
@@ -27,9 +28,7 @@ export default async function ViewProductChainDataTable() {
               <TableCell>{row.date.toISOString().split('T')[0]}</TableCell>
               <TableCell>{row.etat}</TableCell>
               <TableCell className="text-right">
-              <Button variant="outline" size="sm" className="mr-2">
-                Edit
-              </Button>
+              <UpdateOfForm row={row}/>
               <Button variant="outline" size="sm" className="text-red-500">
                 Delete
               </Button>
