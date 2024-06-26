@@ -21,17 +21,33 @@ import {
 import { updateArticles } from "@/actions/actions";
 
 export default function ViewUpdatedStockDataTable({
+  type,
   data,
+  ImportData,
 }: {
+  type: string;
+  ImportData: matierepremiere[];
   data: matierepremiere[];
 }) {
   const [EditMode, SetEditMode] = useState<number | null>(null);
   const [Data, setData] = useState(data);
   const [EditRow, setEditRow] = useState<any | null>({});
   return (
-    <form action={async () => await updateArticles(Data)}>
+    <form
+      action={async () => {
+        if (type === "Inventory") {
+          await updateArticles(Data);
+        } else if (type === "Import") {
+          const FinalData = ImportData.map((row, index) => {
+            row.quantite += Data[index].quantite;
+            return row;
+          });
+          await updateArticles(FinalData);
+        }
+      }}
+    >
       <DialogHeader className="flex py-4">
-        <DialogTitle>Update Stocks</DialogTitle>
+        <DialogTitle>{type}</DialogTitle>
         <DialogDescription></DialogDescription>
         <DialogClose asChild>
           <Button className="w-fit self-end" type="submit">

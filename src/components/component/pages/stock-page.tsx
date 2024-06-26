@@ -15,7 +15,8 @@ export async function StockPage() {
         <span className="flex gap-8">
           <AddArticleForm />
           <AddStocksForm />
-          <UpdateStocksForm ExistingData={data} />
+          <UpdateStocksForm ExistingData={data} type="Inventory" />
+          <UpdateStocksForm ExistingData={data} type="Import" />
         </span>
       </div>
       <ViewStockDataTable data={data} />

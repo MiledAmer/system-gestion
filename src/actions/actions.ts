@@ -27,7 +27,6 @@ export async function updateArticles(Articles:matierepremiere[]){
   );
   try {
     const Articles = await Promise.all(updatePromises)
-    console.log(Articles)
     if(!Articles) throw new Error("Error creating articles")
       revalidatePath("/viewdata/stocks");
   }catch(error){
