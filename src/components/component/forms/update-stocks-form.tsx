@@ -18,17 +18,18 @@ import { cn } from "@/lib/utils";
 import ViewUpdatedStockDataTable from "../tables/view-updated-stock-data-table";
 
 function UpdateStocksForm({
+  type,
   ExistingData,
 }: {
+  type: string;
   ExistingData: matierepremiere[];
 }) {
   const [Data, setData] = useState<unknown[]>([]);
+  const [ImportData, setImportData] = useState<matierepremiere[]>([]);
   const [State, setState] = useState("Upload");
-
   const handleUpload = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files![0];
     const reader = new FileReader();
-
     reader.onload = (e) => {
       const binaryStr = e.target?.result;
       const workbook = XLSX.read(binaryStr, { type: "binary" });
@@ -65,16 +66,18 @@ function UpdateStocksForm({
       });
       TypedData = TypedData.filter((x) => {
         for (const item of ExistingData) {
-          console.log(
-            JSON.stringify(x),
-            JSON.stringify(item),
-            JSON.stringify(item) === JSON.stringify(x)
-          );
           if (item.numeroarticle === x.numeroarticle) {
+            if (type === "Import") {
+              setImportData((prev) => [
+                ...prev,
+                { ...x, quantite: item.quantite },
+              ]);
+            }
             return x;
           }
         }
       });
+
       setData(TypedData);
       setState("Confirm");
     };
@@ -86,7 +89,7 @@ function UpdateStocksForm({
     <Dialog>
       <DialogTrigger asChild>
         <Button className="ml-auto" size="sm">
-          Update Stocks
+          {type === "Inventory" ? "Make Inventory" : "New Import"}
         </Button>
       </DialogTrigger>
       <DialogContent
@@ -98,7 +101,7 @@ function UpdateStocksForm({
         {State === "Upload" ? (
           <>
             <DialogHeader>
-              <DialogTitle>Update Stocks</DialogTitle>
+              <DialogTitle>{type}</DialogTitle>
               <DialogDescription></DialogDescription>
             </DialogHeader>
             <div className="grid grid-cols-4 items-center gap-4 py-8 px-4">
@@ -116,7 +119,11 @@ function UpdateStocksForm({
             </div>
           </>
         ) : (
-          <ViewUpdatedStockDataTable data={Data as matierepremiere[]} />
+          <ViewUpdatedStockDataTable
+            ImportData={ImportData}
+            data={Data as matierepremiere[]}
+            type={type}
+          />
         )}
       </DialogContent>
     </Dialog>
