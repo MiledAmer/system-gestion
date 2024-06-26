@@ -16,14 +16,29 @@ interface Article {
   quantity: number;
 }
 
+export async function updateArticles(Articles:matierepremiere[]){
+  const updatePromises = Articles.map(Article =>
+    db.matierepremiere.update({
+      where: { numeroarticle: Article.numeroarticle },
+      data: {
+        ...Article
+      },
+    })
+  );
+  try {
+    const Articles = await Promise.all(updatePromises)
+    console.log(Articles)
+    if(!Articles) throw new Error("Error creating articles")
+      revalidatePath("/viewdata/stocks");
+  }catch(error){
+    console.log(error)
+  }
+}
 export async function createArticles(Articles:matierepremiere[]){
   try {
-    console.log("asba",Articles)
-    
-    const articles = await db.matierepremiere.createMany({data:Articles})
+    const articles = await db.matierepremiere.createMany({data:Articles,skipDuplicates: true,})
     if(!articles) throw new Error("Error creating articles")
     revalidatePath("/viewdata/stocks");
-  console.log("hey",articles)
   } catch (error) {
     console.log(error)
   }

@@ -3,6 +3,7 @@ import ViewStockDataTable from "../tables/view-stock-data-table";
 import { AddArticleForm } from "../forms/add-article-form";
 import { db } from "@/server/db";
 import AddStocksForm from "../forms/add-stocks-form";
+import UpdateStocksForm from "../forms/update-stocks-form";
 
 export async function StockPage() {
   const data = await db.matierepremiere.findMany();
@@ -14,6 +15,7 @@ export async function StockPage() {
         <span className="flex gap-8">
           <AddArticleForm />
           <AddStocksForm />
+          <UpdateStocksForm ExistingData={data} />
         </span>
       </div>
       <ViewStockDataTable data={data} />
