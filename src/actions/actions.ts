@@ -184,6 +184,21 @@ export async function createProduct(
   }
 }
 
+export async function ProductInOF (productNumber: string){
+  try { 
+    const data = await db.production.findMany({
+      where: { numeroproduit: productNumber },
+      orderBy: {
+        date: "desc",
+      },
+    });
+    if(!data) throw new Error("no data")
+    return data
+  } catch (error) {
+    console.log(error)    
+  }
+}
+
 //product exists
 export async function productExists(productNumber: string) {
   const product = await db.product.findUnique({
