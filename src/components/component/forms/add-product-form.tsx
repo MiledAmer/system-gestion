@@ -22,6 +22,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { createProduct } from "@/actions/actions";
+import { useToast } from "@/components/ui/use-toast";
 
 interface Article {
   name: string;
@@ -30,7 +31,8 @@ interface Article {
 
 export function AddProductForm() {
   const [productNumber, setProductNumber] = useState<string>("");
-  
+  const { toast } = useToast();
+
   const [articles, setArticles] = useState<Article[]>([
     { name: "Article 1", quantity: 1 },
     { name: "Article 2", quantity: 2 },
@@ -54,16 +56,24 @@ export function AddProductForm() {
     const updatedArticles = [...articles];
     //@ts-ignore
     updatedArticles[index][field] = value;
-    setArticles(updatedArticles); 
+    setArticles(updatedArticles);
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Product Number:", productNumber);
-    console.log("Articles:", articles);
-    await createProduct(articles, productNumber);
+
+    const Setter = await createProduct(articles, productNumber);
+    if (Setter.Error) {
+      toast({ description: Setter.Error, variant: "error", icon: "error" });
+    } else {
+      toast({
+        description: Setter.Response?.message,
+        variant: "verified",
+        icon: "verified",
+      });
+    }
   };
-  
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -78,7 +88,7 @@ export function AddProductForm() {
             Fill out the form to create a new product.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="grid gap-6" >
+        <form onSubmit={handleSubmit} className="grid gap-6">
           <div className="grid gap-2">
             <Label htmlFor="productNumber">Product Number</Label>
             <Input

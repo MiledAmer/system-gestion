@@ -1,3 +1,4 @@
+"use client";
 import {
   Dialog,
   DialogTrigger,
@@ -19,8 +20,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { production } from "@prisma/client";
+import { useToast } from "@/components/ui/use-toast";
 
 export function UpdateOfForm({ row }: { row: production }) {
+  const { toast } = useToast();
   const updateOfWithNumber = updateOf.bind(null, row.numeroof);
   return (
     <Dialog>
@@ -34,7 +37,25 @@ export function UpdateOfForm({ row }: { row: production }) {
           <DialogTitle>Update OF</DialogTitle>
           <DialogDescription>OF: {row.numeroof}</DialogDescription>
         </DialogHeader>
-        <form className="space-y-4" action={updateOfWithNumber}>
+        <form
+          className="space-y-4"
+          action={async (Formdata) => {
+            const Setter = await updateOfWithNumber(Formdata);
+            if (Setter.Error) {
+              toast({
+                description: Setter.Error,
+                variant: "error",
+                icon: "error",
+              });
+            } else {
+              toast({
+                description: Setter.Response?.message,
+                variant: "verified",
+                icon: "verified",
+              });
+            }
+          }}
+        >
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="productNumber">Product Number</Label>
@@ -61,7 +82,13 @@ export function UpdateOfForm({ row }: { row: production }) {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="Date">Production date</Label>
-              <Input id="Date" type="Date" name="Date" defaultValue={row.date.toISOString().split("T")[0]} required />
+              <Input
+                id="Date"
+                type="Date"
+                name="Date"
+                defaultValue={row.date.toISOString().split("T")[0]}
+                required
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="State">State</Label>

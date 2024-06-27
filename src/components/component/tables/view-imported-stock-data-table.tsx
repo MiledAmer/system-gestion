@@ -14,6 +14,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { DialogClose, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { createArticles } from "@/actions/actions";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function ViewImportedStockDataTable({
   data,
@@ -23,8 +24,26 @@ export default function ViewImportedStockDataTable({
   const [EditMode, SetEditMode] = useState<number | null>(null);
   const [Data, setData] = useState(data);
   const [EditRow, setEditRow] = useState<any | null>({});
+  const { toast } = useToast();
   return (
-    <form action={async () => await createArticles(Data)}>
+    <form
+      action={async () => {
+        const Setter = await createArticles(Data);
+        if (Setter?.Error) {
+          toast({
+            description: Setter.Error,
+            variant: "error",
+            icon: "error",
+          });
+        } else {
+          toast({
+            description: Setter.Response?.message,
+            variant: "verified",
+            icon: "verified",
+          });
+        }
+      }}
+    >
       <DialogHeader className="flex py-4">
         <DialogTitle>Add Stocks</DialogTitle>
         <DialogClose asChild>

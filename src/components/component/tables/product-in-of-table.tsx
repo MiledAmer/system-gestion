@@ -1,3 +1,5 @@
+"use client";
+import { useToast } from "@/components/ui/use-toast";
 import {
   Table,
   TableBody,
@@ -6,15 +8,21 @@ import {
   TableHeader,
   TableRow,
 } from "../../ui/table";
-import { ProductInOF } from "@/actions/actions";
+import { ActionResponse, ProductInOF } from "@/actions/actions";
+import { useEffect } from "react";
 
 export default async function ProductInOFTable({
-  productNumber,
+  Getter,
 }: {
-  productNumber: string;
+  Getter: ActionResponse;
 }) {
-  const data = await ProductInOF(productNumber);
-
+  const { toast } = useToast();
+  const data = Getter.Response?.Result;
+  useEffect(() => {
+    if (Getter.Error) {
+      toast({ description: Getter.Error, icon: "error", variant: "error" });
+    }
+  }, [Getter]);
   return (
     <div className="border shadow-sm rounded-lg">
       <Table>
@@ -29,7 +37,7 @@ export default async function ProductInOFTable({
         <TableBody>
           {data &&
             data.map(
-              (row) =>
+              (row: any) =>
                 true && (
                   <TableRow key={row.numeroof}>
                     <TableCell className="font-medium mx-auto">
