@@ -1,3 +1,5 @@
+"use client";
+import { useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -6,11 +8,21 @@ import {
   TableHeader,
   TableRow,
 } from "../../ui/table";
-import { articleUsage } from "@/actions/actions";
+import { ActionResponse, articleUsage } from "@/actions/actions";
+import { useToast } from "@/components/ui/use-toast";
 
-
-export default async function ArticleInProductsTable({ articleNumber }: { articleNumber: string}) {
-  const data = await articleUsage(articleNumber.replace("%20", " "));
+export default async function ArticleInProductsTable({
+  Getter,
+}: {
+  Getter: ActionResponse;
+}) {
+  const { toast } = useToast();
+  const data = Getter.Response?.Result;
+  useEffect(() => {
+    if (Getter.Error) {
+      toast({ description: Getter.Error, variant: "error", icon: "error" });
+    }
+  }, [Getter]);
   return (
     <div className="border shadow-sm rounded-lg">
       <Table>
@@ -22,7 +34,7 @@ export default async function ArticleInProductsTable({ articleNumber }: { articl
         </TableHeader>
         <TableBody>
           {data &&
-            data.map((row) => (
+            data.map((row: any) => (
               <TableRow key={row.numeroproduit}>
                 <TableCell>{row.numeroproduit}</TableCell>
                 <TableCell>{row.quantite}</TableCell>

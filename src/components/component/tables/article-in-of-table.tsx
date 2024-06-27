@@ -1,4 +1,4 @@
-import { db } from "@/server/db";
+"use client";
 import {
   Table,
   TableBody,
@@ -7,24 +7,26 @@ import {
   TableHeader,
   TableRow,
 } from "../../ui/table";
-import { articleInOF } from "@/actions/actions";
-import { useState } from "react";
+import { ActionResponse, articleInOF } from "@/actions/actions";
+import { useToast } from "@/components/ui/use-toast";
+import { useEffect, useState } from "react";
 
 export default async function ArticleInOFTable({
-  articleNumber,
+  Getter,
 }: {
-  articleNumber: string;
+  Getter: ActionResponse;
 }) {
-  const data = await articleInOF(articleNumber);
-  const Quantity = await db.matierepremiere.findUnique({
-    select: {
-      quantite: true,
-    },
-    where: {
-      numeroarticle: articleNumber,
-    },
-  });
-  
+  const { toast } = useToast();
+  const data = Getter.Response?.Result;
+  useEffect(() => {
+    if (Getter.Error) {
+      toast({
+        description: Getter.Error,
+        variant: "error",
+        icon: "error",
+      });
+    }
+  }, [Getter]);
   return (
     <div className="border shadow-sm rounded-lg">
       <Table>
@@ -41,7 +43,7 @@ export default async function ArticleInOFTable({
         <TableBody>
           {data &&
             data.map(
-              (row) =>(
+              (row: any) =>
                 row.product.utilisation.length > 0 && (
                   <TableRow key={row.numeroof}>
                     <TableCell className="font-medium mx-auto">
@@ -58,13 +60,9 @@ export default async function ArticleInOFTable({
                       {row.quantity * row.product.utilisation[0].quantite}
                     </TableCell>
 
-                    <TableCell className="mx-auto">
-                      {
-                        "test"
-                      }
-                    </TableCell>
+                    <TableCell className="mx-auto">{"test"}</TableCell>
                   </TableRow>
-                ))
+                )
             )}
         </TableBody>
       </Table>

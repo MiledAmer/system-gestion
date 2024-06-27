@@ -1,3 +1,4 @@
+"use client";
 import {
   Dialog,
   DialogTrigger,
@@ -19,8 +20,10 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { createArticle } from "@/actions/actions";
+import { useToast } from "@/components/ui/use-toast";
 
 export function AddArticleForm() {
+  const { toast } = useToast();
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -35,7 +38,25 @@ export function AddArticleForm() {
             Fill out the form to add a new article to your inventory.
           </DialogDescription>
         </DialogHeader>
-        <form className="grid gap-4 py-4" action={createArticle}>
+        <form
+          className="grid gap-4 py-4"
+          action={async (FormData) => {
+            const Setter = await createArticle(FormData);
+            if (Setter?.Error) {
+              toast({
+                description: Setter.Error,
+                variant: "error",
+                icon: "error",
+              });
+            } else {
+              toast({
+                description: Setter.Response?.message,
+                variant: "verified",
+                icon: "verified",
+              });
+            }
+          }}
+        >
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="article-number" className="text-right">
               Article Number

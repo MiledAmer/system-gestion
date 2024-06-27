@@ -1,3 +1,4 @@
+"use client";
 import {
   Table,
   TableBody,
@@ -12,12 +13,14 @@ import { UpdateArticleForm } from "../forms/update-article-form";
 import DeleteButtons from "./delete-button";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 
-export default async function ViewStockDataTable({
+export default function ViewStockDataTable({
   data,
 }: {
   data: matierepremiere[];
 }) {
+  const { toast } = useToast();
   return (
     <div className="border shadow-sm rounded-lg">
       <Table>
@@ -47,15 +50,30 @@ export default async function ViewStockDataTable({
                 <TableCell className="text-right flex flex-row-reverse">
                   <form
                     action={async (formData: FormData) => {
-                      "use server";
                       const deleteArticleRow = deleteArticle.bind(null, row);
-                      await deleteArticleRow(formData);
+                      const Setter = await deleteArticleRow(formData);
+                      if (Setter?.Error) {
+                        toast({
+                          description: Setter.Error,
+                          variant: "error",
+                          icon: "error",
+                        });
+                      } else {
+                        toast({
+                          description: Setter.Response?.message,
+                          variant: "verified",
+                          icon: "verified",
+                        });
+                      }
                     }}
                   >
                     <DeleteButtons />
                   </form>
                   <UpdateArticleForm row={row} />
-                  <Link href={`/viewdata/stocks/${row.numeroarticle}`} className="mr-2">
+                  <Link
+                    href={`/viewdata/stocks/${row.numeroarticle}`}
+                    className="mr-2"
+                  >
                     <Button variant="outline" size="sm">
                       details
                     </Button>

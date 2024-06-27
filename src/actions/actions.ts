@@ -15,293 +15,366 @@ interface Article {
   name: string;
   quantity: number;
 }
+export type ActionResponse = {
+  Response?: { message: string; Result: any };
+  Error?: string;
+};
 
-export async function updateArticles(Articles:matierepremiere[]){
-  const updatePromises = Articles.map(Article =>
+export async function updateArticles(Articles: matierepremiere[]) {
+  const updatePromises = Articles.map((Article) =>
     db.matierepremiere.update({
       where: { numeroarticle: Article.numeroarticle },
       data: {
-        ...Article
+        ...Article,
       },
     })
   );
   try {
-    const Articles = await Promise.all(updatePromises)
-    if(!Articles) throw new Error("Error creating articles")
-      revalidatePath("/viewdata/stocks");
-  }catch(error){
-    console.log(error)
+    const Articles = await Promise.all(updatePromises);
+    if (!Articles) throw new Error("Error updating articles");
+    revalidatePath("/viewdata/stocks");
+    return { Response: { message: "Articles Updated" } };
+  } catch (error: any) {
+    return { Error: error?.message };
   }
 }
-export async function createArticles(Articles:matierepremiere[]){
+export async function createArticles(Articles: matierepremiere[]) {
   try {
-    const articles = await db.matierepremiere.createMany({data:Articles,skipDuplicates: true,})
-    if(!articles) throw new Error("Error creating articles")
+    const articles = await db.matierepremiere.createMany({
+      data: Articles,
+      skipDuplicates: true,
+    });
+    if (!articles) throw new Error("Error creating articles");
     revalidatePath("/viewdata/stocks");
-  } catch (error) {
-    console.log(error)
+    return { Response: { message: "Articles Created" } };
+  } catch (error: any) {
+    return { Error: error?.message };
   }
 }
 export async function createArticle(formData: FormData) {
-  const rawFormData: matierepremiere = {
-    numeroarticle: formData.get("article-number") as string,
-    designation: formData.get("description") as string,
-    type: formData.get("type") as measurement,
-    quantite: parseFloat(formData.get("quantity") as string),
-    prixunitaire: parseFloat(formData.get("unit-price") as string),
-    date: new Date(),
-  };
-
-  const article = await db.matierepremiere.create({ data: rawFormData });
-  if (article) {
-    revalidatePath("/viewdata/stocks");
-  } else {
-    console.log("ma 5edmetch");
-  }
-}
-
-export async function updateArticle(row: matierepremiere, formData: FormData) {
-  const updatedArticle = await db.matierepremiere.update({
-    where: {
-      numeroarticle: row.numeroarticle,
-    },
-    data: {
+  try {
+    const rawFormData: matierepremiere = {
+      numeroarticle: formData.get("article-number") as string,
       designation: formData.get("description") as string,
       type: formData.get("type") as measurement,
       quantite: parseFloat(formData.get("quantity") as string),
       prixunitaire: parseFloat(formData.get("unit-price") as string),
       date: new Date(),
-    },
-  });
-  console.log(updatedArticle);
-  revalidatePath("/viewdata/stocks");
+    };
+    const article = await db.matierepremiere.create({ data: rawFormData });
+    if (!article) {
+      throw new Error("Error creating article");
+    }
+    revalidatePath("/viewdata/stocks");
+    return { Response: { message: "Article Created" } };
+  } catch (error: any) {
+    return { Error: error?.message };
+  }
+}
+
+export async function updateArticle(row: matierepremiere, formData: FormData) {
+  try {
+    const updatedArticle = await db.matierepremiere.update({
+      where: {
+        numeroarticle: row.numeroarticle,
+      },
+      data: {
+        designation: formData.get("description") as string,
+        type: formData.get("type") as measurement,
+        quantite: parseFloat(formData.get("quantity") as string),
+        prixunitaire: parseFloat(formData.get("unit-price") as string),
+        date: new Date(),
+      },
+    });
+    if (!updatedArticle) throw new Error("Error updating article");
+    revalidatePath("/viewdata/stocks");
+    return { Response: { message: "Article Updated" } };
+  } catch (error: any) {
+    return { Error: error?.message };
+  }
 }
 
 export async function articleExists(articleNumber: string) {
-  const article = await db.matierepremiere.findUnique({
-    where: {
-      numeroarticle: articleNumber,
-    },
-  });
-  return article !== null;
+  try {
+    const article = await db.matierepremiere.findUnique({
+      where: {
+        numeroarticle: articleNumber,
+      },
+    });
+    return {
+      Response: { Result: article !== null, message: "Verification Done" },
+    };
+  } catch (error: any) {
+    return { Error: error?.message };
+  }
 }
 
 //articles exists
 export async function articlesExists(articles: utilisation[]) {
-  let exists = true;
-  articles.forEach(async (article) => {
-    if (!(await articleExists(article.numeroarticle))) {
-      exists = false;
-    }
-  });
-  return exists;
+  try {
+    let exists = true;
+    articles.forEach(async (article) => {
+      if (!(await articleExists(article.numeroarticle)).Response?.Result) {
+        exists = false;
+      }
+    });
+    return { Result: { Response: exists, message: "Verification Done" } };
+  } catch (error: any) {
+    return { Error: error?.message };
+  }
 }
 
 //to delete an article i must delete all production rows with the article number and all utilisation rows with the article number then all product rows with the article number
 export async function deleteArticle(row: matierepremiere, formData: FormData) {
-  // Get all the products that use this article
-  const allProdectThatUsesThisArticle = await db.utilisation.findMany({
-    where: {
-      numeroarticle: row.numeroarticle,
-    },
-  });
-
-  const deleteproducts = allProdectThatUsesThisArticle.map((product) => {
-    // Use the function deleteProduct to delete the product
-    return deleteProduct(product);
-  });
-
-  // Wait for all product deletions to complete
-  Promise.all(deleteproducts).then(async () => {
-    // Then delete the article
-    const deletedArticle = await db.matierepremiere.delete({
+  try {
+    // Get all the products that use this article
+    const allProdectThatUsesThisArticle = await db.utilisation.findMany({
       where: {
         numeroarticle: row.numeroarticle,
       },
     });
+
+    const deleteproducts = allProdectThatUsesThisArticle.map((product) => {
+      // Use the function deleteProduct to delete the product
+      return deleteProduct(product);
+    });
+
+    // Wait for all product deletions to complete
+    Promise.all(deleteproducts).then(async () => {
+      // Then delete the article
+      const deletedArticle = await db.matierepremiere.delete({
+        where: {
+          numeroarticle: row.numeroarticle,
+        },
+      });
+      if (!deletedArticle) throw new Error("Error deleting articles");
+    });
     revalidatePath("/viewdata/stocks");
-    console.log(deletedArticle);
-  });
+    return { Response: { message: "Articles Deleted" } };
+  } catch (error: any) {
+    return { Error: error?.message };
+  }
 }
 
 export async function articleUsage(articleNumber: string) {
-  const usage = await db.utilisation.findMany({
-    where: {
-      numeroarticle: articleNumber,
-    },
-  });
-  return usage;
+  try {
+    const usage = await db.utilisation.findMany({
+      where: {
+        numeroarticle: articleNumber,
+      },
+    });
+    if (!usage) throw new Error("usage not found");
+    return { Response: { Result: usage, message: "Usage Found" } };
+  } catch (error: any) {
+    return { Error: error?.message };
+  }
 }
 
 //article in of
 //get all the of that use this article, the of don't have the article number but the product number
 export async function articleInOF(articleNumber: string) {
-  const result = await db.production.findMany({
-    orderBy: {
-      date: "desc",
-    },
-    include: {
-      product: {
-        include: {
-          utilisation: {
-            where: {
-              numeroarticle: articleNumber,
+  try {
+    const result = await db.production.findMany({
+      orderBy: {
+        date: "desc",
+      },
+      include: {
+        product: {
+          include: {
+            utilisation: {
+              where: {
+                numeroarticle: articleNumber,
+              },
             },
           },
         },
       },
-    },
-    where: {
-      etat: "a_produire",
-    },
-  });
-  return result;
+      where: {
+        etat: "a_produire",
+      },
+    });
+    if (!result) throw new Error("article in of not found");
+    return { Response: { Result: result, message: "Article in OF found" } };
+  } catch (error: any) {
+    return { Error: error?.message };
+  }
 }
 
 //get all the products
 export async function getProducts() {
-  const products = await db.product.findMany();
-  return products;
+  try {
+    const products = await db.product.findMany();
+    return { Response: { Result: products, message: "Products found" } };
+  } catch (error: any) {
+    return { Error: error?.message };
+  }
 }
 
 export async function createProduct(
   articles: Article[],
   productNumber: string
 ) {
-  const rawFormData = {
-    numeroproduit: productNumber as string,
-  };
-  const product = await db.product.create({ data: rawFormData });
-  articles.forEach(async (article) => {
-    const rawArticleData = {
-      numeroproduit: product.numeroproduit,
-      numeroarticle: article.name,
-      quantite: article.quantity,
+  try {
+    const rawFormData = {
+      numeroproduit: productNumber as string,
     };
-    console.log(rawArticleData);
-    if (await articleExists(article.name)) {
-      await db.utilisation.create({ data: rawArticleData });
+    const product = await db.product.create({ data: rawFormData });
+    articles.forEach(async (article) => {
+      const rawArticleData = {
+        numeroproduit: product.numeroproduit,
+        numeroarticle: article.name,
+        quantite: article.quantity,
+      };
+      if ((await articleExists(article.name)).Response?.Result) {
+        await db.utilisation.create({ data: rawArticleData });
+      }
+    });
+    if (!product) {
+      throw new Error("Error creating product");
     }
-  });
-  if (product) {
     revalidatePath("/viewdata/productchain");
-  } else {
-    console.log("ma 5edmetch");
+    return { Response: { message: "Product Created" } };
+  } catch (error: any) {
+    return { Error: error?.message };
   }
 }
 
-export async function ProductInOF (productNumber: string){
-  try { 
+export async function ProductInOF(productNumber: string) {
+  try {
     const data = await db.production.findMany({
       where: { numeroproduit: productNumber },
       orderBy: {
         date: "desc",
       },
     });
-    if(!data) throw new Error("no data")
-    return data
-  } catch (error) {
-    console.log(error)    
+    if (!data) throw new Error("product in OF not found");
+    return { Response: { Result: data, message: "Product in OF found" } };
+  } catch (error: any) {
+    return { Error: error?.message };
   }
 }
 
 //product exists
 export async function productExists(productNumber: string) {
-  const product = await db.product.findUnique({
-    where: {
-      numeroproduit: productNumber,
-    },
-  });
-  return product !== null;
+  try {
+    const product = await db.product.findUnique({
+      where: {
+        numeroproduit: productNumber,
+      },
+    });
+    return {
+      Response: { Result: product !== null, message: "Verification done" },
+    };
+  } catch (error: any) {
+    return { Error: error?.message };
+  }
 }
 
 //product details
 export async function getProductDetails(productNumber: string) {
-  const productDetails = await db.utilisation.findMany({
-    where: {
-      numeroproduit: productNumber,
-    },
-  });
-  return productDetails;
+  try {
+    const productDetails = await db.utilisation.findMany({
+      where: {
+        numeroproduit: productNumber,
+      },
+    });
+    return {
+      Response: { Result: productDetails, message: "Product details found" },
+    };
+  } catch (error: any) {
+    return { Error: error?.message };
+  }
 }
 
 //delete product
 //must delete all utilisation rows with the product number
 export async function deleteProduct(row: product) {
-  // delete all production rows with the product number
-  const deleteProduction = await db.production.deleteMany({
-    where: {
-      numeroproduit: row.numeroproduit,
-    },
-  });
+  try {
+    // delete all production rows with the product number
+    const deleteProduction = await db.production.deleteMany({
+      where: {
+        numeroproduit: row.numeroproduit,
+      },
+    });
 
-  // delete all utilisation rows with the product number
-  const deletedUtilisations = await db.utilisation.deleteMany({
-    where: {
-      numeroproduit: row.numeroproduit,
-    },
-  });
+    // delete all utilisation rows with the product number
+    const deletedUtilisations = await db.utilisation.deleteMany({
+      where: {
+        numeroproduit: row.numeroproduit,
+      },
+    });
 
-  // delete the product
-  const deletedProduct = await db.product.delete({
-    where: {
-      numeroproduit: row.numeroproduit,
-    },
-  });
-  console.log(deletedProduct);
-  revalidatePath("/viewdata/productchain");
+    // delete the product
+    const deletedProduct = await db.product.delete({
+      where: {
+        numeroproduit: row.numeroproduit,
+      },
+    });
+    revalidatePath("/viewdata/productchain");
+    return { Response: { message: "Product deleted successfully" } };
+  } catch (error: any) {
+    return { Error: error?.message };
+  }
 }
 
 // create the of
 export async function createOf(formData: FormData) {
-  // check if product exists
-  const productNumber = formData.get("productNumber") as string;
-  console.log("product number: ", productNumber);
-  if (!(await productExists(productNumber))) {
-    console.log("Product does not exist");
-    return;
-  }
+  try {
+    // check if product exists
+    const productNumber = formData.get("productNumber") as string;
+    console.log("product number: ", productNumber);
+    const ProductExists = await productExists(productNumber);
+    if (!ProductExists.Response?.Result) {
+      throw new Error("Product Doesn't Exist");
+    }
 
-  // get product details
-  const productDetails = await getProductDetails(productNumber);
+    // get product details
+    const Getter = await getProductDetails(productNumber);
+    const productDetails = Getter?.Response?.Result;
 
-  // check if all articles exist
-  if (!(await articlesExists(productDetails))) {
-    console.log("Articles does not exist");
-    return;
-  }
+    // check if all articles exist
+    if (productDetails && !(await articlesExists(productDetails))) {
+      throw new Error("Article doesnt exist");
+    }
 
-  // create the of
-  const rawFormData: production = {
-    numeroof: formData.get("ofNumber") as string,
-    numeroproduit: productNumber,
-    quantity: parseFloat(formData.get("quantity") as string),
-    etat: "a_produire", // default
-    date: new Date(formData.get("Date") as string),
-  };
+    // create the of
+    const rawFormData: production = {
+      numeroof: formData.get("ofNumber") as string,
+      numeroproduit: productNumber,
+      quantity: parseFloat(formData.get("quantity") as string),
+      etat: "a_produire", // default
+      date: new Date(formData.get("Date") as string),
+    };
 
-  const of = await db.production.create({ data: rawFormData });
-  if (of) {
+    const of = await db.production.create({ data: rawFormData });
+    if (!of) {
+      throw new Error("Error creating OF");
+    }
     revalidatePath("/viewdata/viewdata/productchain");
-  } else {
-    console.log("ma 5edmetch");
+    return { Response: { message: " OF Created" } };
+  } catch (error: any) {
+    return { Error: error?.message };
   }
 }
 
 //update of
 export async function updateOf(row: string, formdata: FormData) {
-  const updatedOf = await db.production.update({
-    where: {
-      numeroof: row,
-    },
-    data: {
-      numeroproduit: formdata.get("productNumber") as string,
-      quantity: parseFloat(formdata.get("quantity") as string),
-      etat: formdata.get("State") as productstate,
-      date: new Date(formdata.get("Date") as string),
-    },
-  });
-  console.log(updatedOf);
-  revalidatePath("/viewdata/viewdata/productchain");
+  try {
+    const updatedOf = await db.production.update({
+      where: {
+        numeroof: row,
+      },
+      data: {
+        numeroproduit: formdata.get("productNumber") as string,
+        quantity: parseFloat(formdata.get("quantity") as string),
+        etat: formdata.get("State") as productstate,
+        date: new Date(formdata.get("Date") as string),
+      },
+    });
+    if (!updatedOf) throw new Error("error updating of");
+    revalidatePath("/viewdata/viewdata/productchain");
+    return { Response: { message: "OF Updated" } };
+  } catch (error: any) {
+    return { Error: error?.message };
+  }
 }
-

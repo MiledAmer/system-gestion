@@ -19,6 +19,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { updateArticles } from "@/actions/actions";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function ViewUpdatedStockDataTable({
   type,
@@ -32,17 +33,44 @@ export default function ViewUpdatedStockDataTable({
   const [EditMode, SetEditMode] = useState<number | null>(null);
   const [Data, setData] = useState(data);
   const [EditRow, setEditRow] = useState<any | null>({});
+  const { toast } = useToast();
   return (
     <form
       action={async () => {
         if (type === "Inventory") {
-          await updateArticles(Data);
+          const Setter = await updateArticles(Data);
+          if (Setter?.Error) {
+            toast({
+              description: Setter.Error,
+              variant: "error",
+              icon: "error",
+            });
+          } else {
+            toast({
+              description: Setter.Response?.message,
+              variant: "verified",
+              icon: "verified",
+            });
+          }
         } else if (type === "Import") {
           const FinalData = ImportData.map((row, index) => {
             row.quantite += Data[index].quantite;
             return row;
           });
-          await updateArticles(FinalData);
+          const Setter = await updateArticles(FinalData);
+          if (Setter?.Error) {
+            toast({
+              description: Setter.Error,
+              variant: "error",
+              icon: "error",
+            });
+          } else {
+            toast({
+              description: Setter.Response?.message,
+              variant: "verified",
+              icon: "verified",
+            });
+          }
         }
       }}
     >
