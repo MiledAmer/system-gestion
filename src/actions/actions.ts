@@ -378,3 +378,17 @@ export async function updateOf(row: string, formdata: FormData) {
     return { Error: error?.message };
   }
 }
+
+//get final products
+export async function getFinalProducts() {
+  try {
+    const data = await db.production.findMany({
+      where: {
+        etat: "produit_fini",
+      },
+    });
+    return { Response: { Result: data, message: "Final products found" } };
+  } catch (error: any) {
+    return { Error: error?.message };
+  }
+}
