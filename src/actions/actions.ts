@@ -237,7 +237,7 @@ export async function createProduct(
       prix_main_oeuvre: labourCost,
     };
     const product = await db.product.create({ data: rawFormData });
-    articles.forEach(async (article) => {
+    for (const article of articles) {
       const rawArticleData = {
         numeroproduit: product.numeroproduit,
         numeroarticle: article.name,
@@ -247,12 +247,15 @@ export async function createProduct(
         const articlePrice = (await getArticlePrice(article.name)).Response
           ?.Result; // Cette fonction doit être définie pour récupérer le prix de l'article
         if (articlePrice) {
+          console.log("article price: ", articlePrice);
+          console.log("article quantity: ", article.quantity);
           totalPrice += articlePrice * article.quantity; // Calculer le prix total
+          console.log("total price: ", totalPrice);
         }
 
         await db.utilisation.create({ data: rawArticleData });
       }
-    });
+    }
     if (!product) {
       throw new Error("Error creating product");
     }

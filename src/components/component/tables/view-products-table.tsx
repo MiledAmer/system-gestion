@@ -13,6 +13,7 @@ import DeleteButtons from "./delete-button";
 import Link from "next/link";
 import { useToast } from "@/components/ui/use-toast";
 import { useEffect } from "react";
+import { product } from "@prisma/client";
 
 export default async function ViewProductsTable({
   Getter,
@@ -32,18 +33,22 @@ export default async function ViewProductsTable({
         <TableHeader>
           <TableRow>
             <TableHead>Product number</TableHead>
+            <TableHead>Price</TableHead>
+            <TableHead>Labour cost</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {data &&
-            data.map((row: any) => (
+            data.map((row: product) => (
               <TableRow key={row.numeroproduit}>
                 <TableCell>{row.numeroproduit}</TableCell>
+                <TableCell>{row.prix}</TableCell>
+                <TableCell>{row.prix_main_oeuvre}</TableCell>
                 <TableCell className="text-right flex flex-row-reverse">
                   <form
                     action={async () => {
-                      const Setter = await deleteProduct(row);
+                      const Setter = await deleteProduct(row.numeroproduit);
                       if (Setter.Error) {
                         toast({
                           description: Setter.Error,
