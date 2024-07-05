@@ -58,6 +58,7 @@ export async function createArticle(formData: FormData) {
       designation: formData.get("description") as string,
       type: formData.get("type") as measurement,
       quantite: parseFloat(formData.get("quantity") as string),
+      quantiteTheorique: parseFloat(formData.get("quantity") as string),
       prixunitaire: parseFloat(formData.get("unit-price") as string),
       date: new Date(),
     };
@@ -109,6 +110,19 @@ export async function articleExists(articleNumber: string) {
   }
 }
 
+export async function getArticlePrice(id: string) {
+  try {
+    const article = await db.matierepremiere.findUnique({
+      where: {
+        numeroarticle: id,
+      },
+    });
+    return { Response: { Result: article?.prixunitaire, message: "success" } };
+  } catch (error: any) {
+    return { Error: error?.message };
+  }
+}
+
 //articles exists
 export async function articlesExists(articles: utilisation[]) {
   try {
@@ -136,7 +150,7 @@ export async function deleteArticle(row: matierepremiere, formData: FormData) {
 
     const deleteproducts = allProdectThatUsesThisArticle.map((product) => {
       // Use the function deleteProduct to delete the product
-      return deleteProduct(product);
+      return deleteProduct(product.numeroproduit);
     });
 
     // Wait for all product deletions to complete
@@ -212,11 +226,15 @@ export async function getProducts() {
 
 export async function createProduct(
   articles: Article[],
-  productNumber: string
+  productNumber: string,
+  labourCost: number
 ) {
   try {
-    const rawFormData = {
+    let totalPrice = 0;
+    const rawFormData: product = {
       numeroproduit: productNumber as string,
+      prix: 0,
+      prix_main_oeuvre: labourCost,
     };
     const product = await db.product.create({ data: rawFormData });
     articles.forEach(async (article) => {
@@ -226,12 +244,24 @@ export async function createProduct(
         quantite: article.quantity,
       };
       if ((await articleExists(article.name)).Response?.Result) {
+        const articlePrice = (await getArticlePrice(article.name)).Response
+          ?.Result; // Cette fonction doit être définie pour récupérer le prix de l'article
+        if (articlePrice) {
+          totalPrice += articlePrice * article.quantity; // Calculer le prix total
+        }
+
         await db.utilisation.create({ data: rawArticleData });
       }
     });
     if (!product) {
       throw new Error("Error creating product");
     }
+
+    await db.product.update({
+      where: { numeroproduit: productNumber },
+      data: { prix: totalPrice },
+    });
+
     revalidatePath("/viewdata/productchain");
     return { Response: { message: "Product Created" } };
   } catch (error: any) {
@@ -288,26 +318,26 @@ export async function getProductDetails(productNumber: string) {
 
 //delete product
 //must delete all utilisation rows with the product number
-export async function deleteProduct(row: product) {
+export async function deleteProduct(id: string) {
   try {
     // delete all production rows with the product number
     const deleteProduction = await db.production.deleteMany({
       where: {
-        numeroproduit: row.numeroproduit,
+        numeroproduit: id,
       },
     });
 
     // delete all utilisation rows with the product number
     const deletedUtilisations = await db.utilisation.deleteMany({
       where: {
-        numeroproduit: row.numeroproduit,
+        numeroproduit: id,
       },
     });
 
     // delete the product
     const deletedProduct = await db.product.delete({
       where: {
-        numeroproduit: row.numeroproduit,
+        numeroproduit: id,
       },
     });
     revalidatePath("/viewdata/productchain");

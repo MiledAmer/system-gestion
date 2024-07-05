@@ -6,8 +6,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
-  DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -53,6 +51,7 @@ function AddStocksForm() {
           designation: row["Description"],
           type: row["Type"],
           quantite: parseFloat(row["Quantity"]),
+          quantiteTheorique: parseFloat(row["Quantity"]),
           prixunitaire: parseFloat(row["Unit Price"]),
           date: row["Date"],
         };

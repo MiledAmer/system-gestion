@@ -31,6 +31,7 @@ interface Article {
 
 export function AddProductForm() {
   const [productNumber, setProductNumber] = useState<string>("");
+  const [labourCost, setLabourCost] = useState<number>(0);
   const { toast } = useToast();
 
   const [articles, setArticles] = useState<Article[]>([
@@ -62,7 +63,7 @@ export function AddProductForm() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const Setter = await createProduct(articles, productNumber);
+    const Setter = await createProduct(articles, productNumber, labourCost);
     if (Setter.Error) {
       toast({ description: Setter.Error, variant: "error", icon: "error" });
     } else {
@@ -96,6 +97,15 @@ export function AddProductForm() {
               name="productNumber"
               value={productNumber}
               onChange={(e) => setProductNumber(e.target.value)}
+              required
+            />
+            <Label htmlFor="LabourCost">Labour cost</Label>
+            <Input
+              id="LabourCost"
+              name="LabourCost"
+              value={labourCost}
+              type="number"
+              onChange={(e) => setLabourCost(parseFloat(e.target.value))}
               required
             />
           </div>

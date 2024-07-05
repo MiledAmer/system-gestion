@@ -7,11 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model config_variables {
-  variable_name  String @id @db.VarChar
-  variable_value Float? @db.Real
-}
-
 model historique {
   id          Float       @id
   nom         String      @db.VarChar(50)
@@ -21,19 +16,22 @@ model historique {
 }
 
 model matierepremiere {
-  numeroarticle String        @id @db.VarChar(50)
-  designation   String?       @default("Designation_de_matiere") @db.VarChar(30)
-  type          measurement?  @default(piece)
-  quantite      Float
-  prixunitaire  Float
-  date          DateTime      @default(dbgenerated("CURRENT_DATE")) @db.Date
-  utilisation   utilisation[]
+  numeroarticle     String        @id @db.VarChar(50)
+  designation       String?       @default("Designation_de_matiere") @db.VarChar(30)
+  type              measurement?  @default(piece)
+  quantite          Float
+  quantiteTheorique Float
+  prixunitaire      Float
+  date              DateTime      @default(dbgenerated("CURRENT_DATE")) @db.Date
+  utilisation       utilisation[]
 }
 
 model product {
-  numeroproduit String        @id @db.VarChar(50)
-  production    production[]
-  utilisation   utilisation[]
+  numeroproduit    String        @id @db.VarChar(50)
+  prix             Float
+  prix_main_oeuvre Float
+  production       production[]
+  utilisation      utilisation[]
 }
 
 model production {
