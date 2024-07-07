@@ -9,7 +9,9 @@ import {
   productstate,
   utilisation,
 } from "@prisma/client";
+import { error } from "console";
 import { revalidatePath } from "next/cache";
+import { Result } from "postcss";
 
 interface Article {
   name: string;
@@ -391,8 +393,104 @@ export async function createOf(formData: FormData) {
 }
 
 //update of
+
+export async function consumeArticles(
+  articles: matierepremiere[],
+  usedQuantity: number
+) {
+  try {
+    for (const article of articles) {
+      const updatedArticle = await db.matierepremiere.update({
+        where: {
+          numeroarticle: article.numeroarticle,
+        },
+        data: {
+          quantite: article.quantite - usedQuantity,
+        },
+      });
+      if (!updatedArticle) throw new Error("Error updating article");
+    }
+    return { Response: { message: "Articles consumed with success" } };
+  } catch (error: any) {
+    return { Error: error?.message };
+  }
+}
+
+export async function getArticlesUsedInProduct(productNumber: string) {
+  try {
+    const productArticles = await db.utilisation.findMany({
+      where: {
+        numeroproduit: productNumber,
+      },
+    });
+    const articles = productArticles.map(async (article) =>
+      db.matierepremiere.findUnique({
+        where: {
+          numeroarticle: article.numeroarticle,
+        },
+      })
+    );
+    const articlesData = await Promise.all(articles);
+    if (!articlesData) throw new Error("Error getting articles");
+    return {
+      Response: {
+        Result: articlesData,
+        message: "get article usage with success",
+      },
+    };
+  } catch (error: any) {
+    return { Error: error?.message };
+  }
+}
+
+export async function enoughArticlesQuantity(
+  articles: matierepremiere[],
+  productNumber: string,
+  OFQuantity: number
+) {
+  try {
+    let totalRequiredQuantity = 0;
+    for (const article of articles) {
+      const articleUsage = await db.utilisation.findUnique({
+        where: {
+          numeroproduit_numeroarticle: {
+            numeroarticle: article.numeroarticle,
+            numeroproduit: productNumber,
+          },
+        },
+        select: {
+          quantite: true,
+        },
+      });
+      if (articleUsage) {
+        totalRequiredQuantity += articleUsage.quantite * OFQuantity;
+      }
+      if (totalRequiredQuantity <= article.quantite) {
+        return { Response: { message: "Articles quantity is enough" } };
+      } else {
+        throw new Error(
+          `Articles ${article.numeroarticle} quantity is not enough`
+        );
+      }
+    }
+  } catch (error: any) {
+    return { Error: error?.message };
+  }
+}
+
 export async function updateOf(row: string, formdata: FormData) {
   try {
+    const productNumber = formdata.get("productNumber") as string;
+    if (formdata.get("State") === "produit_fini") {
+      const articleUsage = (await getArticlesUsedInProduct(productNumber))
+        .Response?.Result as matierepremiere[];
+      const Result = await enoughArticlesQuantity(
+        articleUsage,
+        productNumber,
+        parseFloat(formdata.get("quantity") as string)
+      );
+      if (Result?.Error) throw new Error(Result.Error);
+    }
     const updatedOf = await db.production.update({
       where: {
         numeroof: row,
